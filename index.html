@@ -8,14 +8,24 @@
 </head>
 
 <style>
+    html {
+        width: 100%;
+    }
+
     body {
+        padding: 0;
+        margin: 0;
+
         position: relative;
-        width: auto;
-        height: fit-content;
+        width: 100%;
     }
 
     .scrolling-block {
         display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background-color: rgba(0, 0, 0, 0.5);
 
         width: 100%;
         min-height: fit-content;
@@ -25,17 +35,15 @@
     }
 
     .scrolling-block img {
-        width: 100%;
-        height: auto;
+        width: auto;
+        max-width: 100%;
+        height: 100%;
+        object-fit: cover;
     }
 
     .scrolling-block.invise {
         opacity: 0;
         transition: opacity 0.5s ease-in;
-
-        @media (max-width: 1366px) {
-            opacity: 1;
-        }
     }
 
     .scrolling-block.active {
