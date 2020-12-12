@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+
+<style>
+    body {
+        position: relative;
+        width: auto;
+        height: fit-content;
+    }
+
+    .scrolling-block {
+        display: flex;
+
+        width: 100%;
+        min-height: fit-content;
+        height: 100vh;
+
+        position: relative;
+    }
+
+    .scrolling-block img {
+        width: 100%;
+        height: auto;
+    }
+
+    .scrolling-block.invise {
+        opacity: 0;
+        transition: opacity 0.5s ease-in;
+
+        @media (max-width: 1366px) {
+            opacity: 1;
+        }
+    }
+
+    .scrolling-block.active {
+        opacity: 1;
+        transition: opacity 0.5s ease-in;
+    }
+
+    .small-height {
+        min-height: fit-content;
+        height: 50vh;
+    }
+</style>
+
+<body>
+
+    <sections class="scrolling-block">
+        <img src="./img/1.jpg" alt="">
+    </sections>
+    <sections class="scrolling-block small-height">
+        <img src="./img/2.jpg" alt="">
+    </sections>
+    <sections class="scrolling-block">
+        <img src="./img/3.jpg" alt="">
+    </sections>
+    <sections class="scrolling-block small-height">
+        <img src="./img/4.jpg" alt="">
+    </sections>
+    <sections class="scrolling-block">
+        <img src="./img/5.jpg" alt="">
+    </sections>
+    <sections class="scrolling-block">
+        <img src="./img/6.png" alt="">
+    </sections>
+
+    <script src="jquery-3.5.1.min.js"></script>
+    <script src="ScrollerMagic.js"></script>
+</body>
+
+</html>
