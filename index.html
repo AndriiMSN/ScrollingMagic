@@ -10,6 +10,24 @@
 <style>
     html {
         width: 100%;
+        scrollbar-width: none;
+        /* Also needed to disable scrollbar Firefox */
+        -ms-overflow-style: none;
+        /* Disable scrollbar IE 10+ */
+    }
+
+    @-moz-document url-prefix() {
+
+        /* Disable scrollbar Firefox */
+        html {
+            scrollbar-width: none;
+        }
+    }
+
+    html::-webkit-scrollbar {
+        width: 0px;
+        background: transparent;
+        /* Disable scrollbar Chrome/Safari/Webkit */
     }
 
     body {
