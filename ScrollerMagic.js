@@ -2,6 +2,7 @@
 
 let delay = false;
 let counter = 0;
+
 let delayWheel = 400;
 let delayTouch = 400;
 let delayKey = 700;
@@ -15,8 +16,6 @@ const sections = document.querySelectorAll(".scrolling-block");
 
 // SETTINGS END----------------------------------------------------------------------------------------------
 
-// const modalLets = document.querySelector(".lets__talk");
-// const modalStart = document.querySelector(".start__earning");
 
 // FUNCTIONS ------------------------------------------------------------------------------------
 
@@ -204,6 +203,43 @@ function checkKey(e) {
     }
 }
 
+function detectResizeCounter() {
+
+    if (document.documentElement.clientWidth < breakPoint
+        &&
+        !(sections[counter + 1] ? sections[counter + 1].classList.contains('invise') : false
+            ||
+            sections[counter - 1] ? sections[counter - 1].classList.contains('invise') : false)) {
+
+
+
+        let clientHeight = document.documentElement.clientHeight
+
+        if (pageYOffset < (sections[0].offsetTop + sections[0].clientHeight) / 2) {
+            return counter = 0
+        } else if (
+            pageYOffset > sections[sections.length - 1].offsetTop + sections[sections.length - 1].clientHeight / 2
+        ) {
+            return counter = sections.length;
+        }
+
+        for (let i = 0; i < sections.length; i++) {
+            if (
+                sections[i + 1]
+                &&
+                ((pageYOffset > (sections[i].offsetTop + (sections[i].clientHeight / 2)) - 10)
+                    &&
+                    (pageYOffset < (sections[i + 1].offsetTop + sections[i + 1].clientHeight / 2)))
+            ) {
+                return counter = i + 1
+            }
+
+
+
+        }
+    }
+}
+
 // FUNCTIONS END ---------------------------------------------------------------------------------
 
 // EVENTLISTENERS -------------------------------------------------------------------------------
@@ -289,44 +325,6 @@ document.onkeydown = checkKey;
 
 // Remove scroll pc
 
-let lastScrollOffset = 0
-
-function detectResizeCounter() {
-
-    if (document.documentElement.clientWidth < breakPoint
-        &&
-        !(sections[counter + 1] ? sections[counter + 1].classList.contains('invise') : false
-            ||
-            sections[counter - 1] ? sections[counter - 1].classList.contains('invise') : false)) {
-
-
-
-        let clientHeight = document.documentElement.clientHeight
-
-        if (pageYOffset < (sections[0].offsetTop + sections[0].clientHeight) / 2) {
-            return counter = 0
-        } else if (
-            pageYOffset > sections[sections.length - 1].offsetTop + sections[sections.length - 1].clientHeight / 2
-        ) {
-            return counter = sections.length;
-        }
-
-        for (let i = 0; i < sections.length; i++) {
-            if (
-                sections[i + 1]
-                &&
-                ((pageYOffset > (sections[i].offsetTop + (sections[i].clientHeight / 2)) - 10)
-                    &&
-                    (pageYOffset < (sections[i + 1].offsetTop + sections[i + 1].clientHeight / 2)))
-            ) {
-                return counter = i + 1
-            }
-
-
-
-        }
-    }
-}
 
 window.addEventListener("scroll", (e) => {
     e.preventDefault();
