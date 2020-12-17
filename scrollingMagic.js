@@ -255,9 +255,18 @@ window.addEventListener(
     "touchmove",
     (e) => {
         if (document.documentElement.clientWidth >= breakPoint) {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
+
+            let directionY = e.changedTouches[0].clientY - currentY;
+            let directionX = e.changedTouches[0].clientX - currentX;
+
+
+            if ((directionX > 50 || directionX < -50) && (directionY < 50 && directionY > -50)) {
+                console.log(directionX)
+            } else {
+                e.preventDefault()
+                e.stopPropagation()
+                return false
+            }
         }
     },
     document.documentElement.clientWidth >= breakPoint
