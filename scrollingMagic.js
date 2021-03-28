@@ -116,45 +116,82 @@ function scrollToSection(e, directionY, directionX) {
 function onWheel(e) {
 
     if (document.documentElement.clientWidth >= breakPoint) {
-        console.log(counter);
+
+
         let directionY = e.deltaY;
 
         let directionX = e.deltaX;
 
-        // section by Y
-        if (directionY !== 0) {
-            e.preventDefault();
-        }
 
-        scrollToSection(e, directionY, directionX);
+        let maxY = sections[sections.length - 1].offsetTop;
+
+        if (pageYOffset > maxY - 10 && maxY !== 0) {
+            if (directionY < 0 && directionX === 0) {
+
+                e.preventDefault();
+
+                scrollToSection(e,
+                    directionY,
+                    directionX);
+            }
+        } else {
+
+            // Remove scroll after scrolling to next
+            // section by Y
+            if (directionY !== 0) {
+                e.preventDefault();
+            }
+
+            scrollToSection(e,
+                directionY,
+                directionX);
+
+        }
     }
 }
 
-function touchToSection(e, directionY) {
-
-    if (delay) {
+function touchToSection(e, directionY, directionX) {
+    if (delay || sections[2].offsetTop === 0) {
         return;
     }
 
+    // console.log(directionX);
     delay = true;
+
 
     if (directionY > 30 || directionY < -30) {
         // if scroll by y
         e.preventDefault();
         setTimeout(function () {
-            delay = false;
-        }, delayTouch);
+                delay = false;
+            },
+            400);
     } else {
         // If scroll by x remove Delay
         delay = false;
     }
 
+
     if (directionY < -30) {
-        scrollDown();
-        easeScroll();
+        //scroll down
+
+        scrollDown()
+
+        // Easy animation
+
+        easeScroll()
+
+        return counter;
+
+
     } else if (directionY > 30) {
-        scrollUp();
-        easeScroll();
+        //scroll up
+
+        scrollUp()
+
+        // Easy animation
+
+        easeScroll()
     }
 }
 
@@ -203,42 +240,76 @@ function checkKey(e) {
     }
 }
 
-function detectResizeCounter() {
-
-    if (document.documentElement.clientWidth < breakPoint
-        &&
-        !(sections[counter + 1] ? sections[counter + 1].classList.contains('invise') : false
-            ||
-            sections[counter - 1] ? sections[counter - 1].classList.contains('invise') : false)) {
+let lastScrollTop = 0;
+let i = 0
+window.addEventListener('scroll', (e) => {
 
 
+    if (document.documentElement.clientWidth < breakPoint) {
 
-        let clientHeight = document.documentElement.clientHeight
+        let st = window.pageYOffset || document.documentElement.scrollTop
 
-        if (pageYOffset < (sections[0].offsetTop + sections[0].clientHeight) / 2) {
-            return counter = 0
-        } else if (
-            pageYOffset > sections[sections.length - 1].offsetTop + sections[sections.length - 1].clientHeight / 2
-        ) {
-            return counter = sections.length;
-        }
+        if (st > lastScrollTop) {
 
-        for (let i = 0; i < sections.length; i++) {
             if (
-                sections[i + 1]
-                &&
-                ((pageYOffset > (sections[i].offsetTop + (sections[i].clientHeight / 2)) - 10)
-                    &&
-                    (pageYOffset < (sections[i + 1].offsetTop + sections[i + 1].clientHeight / 2)))
+                pageYOffset > sections[sections.length - 2].offsetTop
             ) {
-                return counter = i + 1
+
+                counter = sections.length - 1;
+                sections[counter].classList.add('animate')
+                sections[counter].classList.add('active')
+                // console.log(counter, '1')
+                return counter
             }
 
 
+            if (
+                sections[i + 1]
+                &&
+                (pageYOffset + document.documentElement.clientHeight > (sections[i + 1].offsetTop + (sections[i + 1].clientHeight / 10)) - 10)
+                // &&
+                // (pageYOffset  < (sections[i + 1].offsetTop + (sections[i + 1].clientHeight) / 2))
+            ) {
+                // console.log(i + 1);
+                i = i + 1
+                counter = i
+                sections[counter].classList.add('animate')
+                sections[counter].classList.add('active')
+                // console.log(counter, '2')
+                return counter, i
+            }
+        } else {
+            if (
+                pageYOffset < sections[1].offsetTop
+            ) {
 
+                counter = 0;
+                sections[counter].classList.add('animate')
+                sections[counter].classList.add('active')
+                // console.log(counter, '3')
+                return counter
+            }
+
+
+            if (
+                sections[i - 1]
+                &&
+                (pageYOffset - document.documentElement.clientHeight < (sections[i - 1].offsetTop + (sections[i - 1].clientHeight / 10)) - 10)
+                // &&
+                // (pageYOffset  < (sections[i + 1].offsetTop + (sections[i + 1].clientHeight) / 2))
+            ) {
+                // console.log(i + 1);
+                i = i - 1
+                counter = i
+                sections[counter].classList.add('animate')
+                sections[counter].classList.add('active')
+                console.log(counter, '4')
+                return counter, i
+            }
         }
+        return lastScrollTop = st <= 0 ? 0 : st
     }
-}
+})
 
 // FUNCTIONS END ---------------------------------------------------------------------------------
 
@@ -248,87 +319,90 @@ window.addEventListener("wheel", onWheel, {
     passive: false,
 });
 
-let currentY = 0,
-    currentX = 0;
 
-window.addEventListener(
-    "touchmove",
-    (e) => {
-        if (document.documentElement.clientWidth >= breakPoint) {
+    let currentY = 0,
+    currentX = 0
 
-            let directionY = e.changedTouches[0].clientY - currentY;
-            let directionX = e.changedTouches[0].clientX - currentX;
+function touchmove(e) {
 
+        let maxY = sections[sections.length - 1].offsetTop;
+        let directionY = e.changedTouches[0].clientY - currentY;
+        let directionX = e.changedTouches[0].clientX - currentX;
+        // console.log(directionX);
+        if ((directionX > 50 || directionX < -50) && (directionY < 50 && directionY > -50)) {
 
-            if ((directionX > 50 || directionX < -50) && (directionY < 50 && directionY > -50)) {
-                console.log(directionX)
-            } else {
+        } else if (pageYOffset > maxY - 10 && maxY !== 0) {
+
+            if (directionY > 0) {
                 e.preventDefault()
                 e.stopPropagation()
                 return false
             }
+        } else {
+
+
+            e.preventDefault()
+            e.stopPropagation()
+            return false
+
         }
-    },
-    document.documentElement.clientWidth >= breakPoint
-        ? {
-            passive: false,
-        }
-        : {
-            passive: true,
-        }
-);
 
-window.addEventListener('resize', () => {
+}
 
-})
-
-window.addEventListener("touchstart", (e) => {
-    if (document.documentElement.clientWidth >= breakPoint) {
-        //     e.preventDefault()
-        currentY = e.changedTouches[0].clientY;
-        currentX = e.changedTouches[0].clientX;
-
-        return currentY, currentX;
-    }
-});
-
-window.addEventListener(
-    "touchend",
-    function (e) {
-        let directionY = e.changedTouches[0].clientY - currentY;
-
-        let directionX = e.changedTouches[0].clientX - currentX;
-
-        if (
-            document.documentElement.clientWidth >= breakPoint &&
-            directionY !== 0 &&
-            directionX !== 0
-        ) {
-
-            let maxY = sections[sections.length - 1].offsetTop;
+function touchstart(e) {
+    currentY = e.changedTouches[0].clientY;
+    currentX = e.changedTouches[0].clientX;
 
 
+    return currentY, currentX, false
+}
+
+function touchend(e) {
+   
+    let directionY = e.changedTouches[0].clientY - currentY;
+
+    let directionX = e.changedTouches[0].clientX - currentX;
+
+    if ((directionY !== 0 && directionX !== 0)) {
+
+
+        // console.log(directionX, directionY);
+
+        // console.log(directionX, directionY);
+
+
+        let maxY = sections[sections.length - 1].offsetTop;
+
+        if (pageYOffset < maxY - 10 && maxY !== 0) {
+
+
+            // Remove scroll after scrolling to next
             // section by Y
             if (directionY < 50 && directionY > -50) {
                 e.preventDefault();
 
+                // console.log('prev');
             } else {
-                touchToSection(e, directionY, directionX);
-            }
 
+                // if (pageYOffset > maxY - 10 && directionY < 0) {
+                //     console.log('max');
+                // } else {
 
-            if (pageYOffset < maxY && directionY < 0 && directionX === 0) {
-
-                if (directionY !== 0) {
-                    e.preventDefault();
-                }
-                touchToSection(e, directionY, directionX);
+                touchToSection(e,
+                    directionY,
+                    directionX);
+                // }
             }
         } else {
+            if (directionY > 0) {
+                // console.log('uup');
+                touchToSection(e,
+                    directionY,
+                    directionX);
+            }
         }
-    },
-    {}
-);
+    }
+}
 
 document.onkeydown = checkKey;
 
@@ -336,45 +410,59 @@ document.onkeydown = checkKey;
 // Remove scroll pc
 
 
-window.addEventListener("scroll", (e) => {
-    e.preventDefault();
-    if (counter !== sections.length - 1) {
-        if (document.documentElement.clientWidth >= breakPoint) {
-            window.scrollTo(
-                0,
-                sections[counter].offsetTop -
-                (document.documentElement.clientHeight -
-                    sections[counter].clientHeight) /
-                2
-            );
+window.addEventListener('scroll',
+    (e) => {
+        e.preventDefault()
+        if (counter !== sections.length - 1) {
+            if ((document.documentElement.clientWidth >= 1366)) {
+
+
+                    window.scrollTo(0,
+                        sections[counter].offsetTop - (
+                        document.documentElement.clientHeight - (sections[counter].clientHeight)) / 2
+                    )
+            
+            }
         }
+    })
+
+function InitTouchScroll() {
+    if (document.documentElement.clientWidth >= 1366) {
+        window.addEventListener('touchmove', touchmove,
+            {passive: false})
+
+
+        window.addEventListener('touchstart', touchstart, {passive: false})
+
+        window.addEventListener(
+            "touchend",
+            touchend,
+            {passive: false}
+        );
+    } else {
+        window.removeEventListener('touchmove', touchmove,)
+        window.removeEventListener('touchstart', touchstart,)
+        window.removeEventListener('touchend', touchend,)
     }
-});
+}
+
+InitTouchScroll()
+
+window.addEventListener('resize', InitTouchScroll)
+
+let oldWidth = document.documentElement.clientWidth
+let oldHeight = document.documentElement.clientHeight
 
 window.addEventListener('resize', () => {
-    detectResizeCounter()
-    if (document.documentElement.clientWidth < breakPoint) {
+    if (document.documentElement.clientWidth !== oldWidth && document.documentElement.clientHeight !== oldHeight) {
+        // console.log(counter);
+        sections[counter].classList.add("active");
+        window.scrollTo(
+            0,
+            sections[counter].offsetTop
+        );
 
-        sections.forEach((el) => {
-            el.classList.remove('invise')
-            el.classList.add('active')
-        })
-
-    } else {
-        sections.forEach((el) => {
-            el.classList.remove('active')
-            el.classList.add('invise')
-        })
-
+        return oldWidth = document.documentElement.clientWidth, oldHeight = document.documentElement.clientHeight
     }
-
-    sections[counter].classList.add('active')
-
-    window.scrollTo(
-        0,
-        sections[counter].offsetTop -
-        (document.documentElement.clientHeight -
-            sections[counter].clientHeight) /
-        2
-    );
 })
+
